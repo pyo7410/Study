@@ -1,0 +1,3 @@
+﻿  소스.cpp
+c:\users\jsp\desktop\백준\8393_sum\8393_sum\소스.cpp(18): warning C4101: 'result' :참조되지 않은 지역 변수입니다.
+  8393_Sum.vcxproj -> C:\Users\JSP\Desktop\백준\8393_Sum\Debug\8393_Sum.exe
