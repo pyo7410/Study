@@ -34,17 +34,26 @@ int main()
 		}
 		else if (cmd == 'B')
 		{
-			l_s.pop();
+			if (!l_s.empty())
+			{
+				l_s.pop();
+			}
 		}
 		else if (cmd == 'D')
 		{
-			l_s.push(r_s.top());
-			r_s.pop();
+			if (!r_s.empty())
+			{
+				l_s.push(r_s.top());
+				r_s.pop();
+			}
 		}
 		else if (cmd == 'L')
 		{
-			r_s.push(l_s.top());
-			l_s.pop();
+			if (!l_s.empty())
+			{
+				r_s.push(l_s.top());
+				l_s.pop();
+			}
 		}
 	}
 
@@ -59,5 +68,6 @@ int main()
 		cout << r_s.top();
 		r_s.pop();
 	}
+
 	cout << "\n";
 }
