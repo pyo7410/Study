@@ -1,5 +1,0 @@
-﻿  소스.cpp
-c:\users\jsp\desktop\백준\2577_num_count\2577_num_count\소스.cpp(21): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\jsp\desktop\백준\2577_num_count\2577_num_count\소스.cpp(11): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.16299.0\ucrt\stdio.h(1272): note: 'scanf' 선언을 참조하십시오.
-  2577_Num_Count.vcxproj -> C:\Users\JSP\Desktop\백준\2577_Num_Count\Debug\2577_Num_Count.exe
