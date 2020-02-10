@@ -36,7 +36,6 @@ int main()
 				ans += d[i][j];
 			}
 		}
-
 		cout << ans << "\n";
 	}
 }
