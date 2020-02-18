@@ -134,24 +134,47 @@ int main()
                     ans = temp;
                 }
             }
-             if (j+2 < m) {
+            if (i + 2 < n && j + 1 < m)
+            {
+                temp = a[i][j] + a[i + 1][j] + a[i + 1][j + 1] + a[i + 2][j + 1];
+                if (temp > ans)
+                {
+                    ans = temp;
+                }
+            }
+            if (i + 2 < n && j + 1 < m)
+            {
+                temp = a[i][j + 1] + a[i + 1][j + 1] + a[i + 1][j] + a[i + 2][j];
+                if (temp > ans)
+                {
+                    ans = temp;
+                }
+            }
+            // ¤Ç ¸ð¾ç
+            if (j+2 < m) 
+            {
                 int temp = a[i][j] + a[i][j+1] + a[i][j+2];
-                if (i-1 >= 0) {
+                if (i-1 >= 0) 
+                {
                     int temp2 = temp + a[i-1][j+1];
                     if (ans < temp2) ans = temp2;
                 }
-                if (i+1 < n) {
+                if (i+1 < n) 
+                {
                     int temp2 = temp + a[i+1][j+1];
                     if (ans < temp2) ans = temp2;
                 }
             }
-            if (i+2 < n) {
+            if (i+2 < n) 
+            {
                 int temp = a[i][j] + a[i+1][j] + a[i+2][j];
-                if (j+1 < m) {
+                if (j+1 < m) 
+                {
                     int temp2 = temp + a[i+1][j+1];
                     if (ans < temp2) ans = temp2;
                 }
-                if (j-1 >= 0) {
+                if (j-1 >= 0) 
+                {
                     int temp2 = temp + a[i+1][j-1];
                     if (ans < temp2) ans = temp2;
                 }
