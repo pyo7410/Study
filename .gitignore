@@ -10,6 +10,7 @@ c_cpp_properties.json
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
+c_cpp_properties.json
 
 # Build results
 [Dd]ebug/
@@ -260,3 +261,4 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+baek/.vscode/c_cpp_properties.json
