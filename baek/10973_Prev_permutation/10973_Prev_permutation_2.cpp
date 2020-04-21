@@ -13,7 +13,6 @@ int main()
     int a[10000];
     cin >> n;
 
-    // 배열의 인덱스 주의
     for (int i = 0; i < n; ++i)
     {
         cin >> a[i];
@@ -21,7 +20,6 @@ int main()
 
     if (prev_permutation(a, a + n))
     {
-        // 배열의 인덱스 주의
         for (int i = 0; i < n; ++i)
         {
             cout << a[i] << " ";
