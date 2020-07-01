@@ -1,14 +1,21 @@
 package com.springbook.view.user;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+//import javax.servlet.http.HttpServletRequest;
+//import javax.servlet.http.HttpServletResponse;
+
+//import org.springframework.web.servlet.ModelAndView;
+//import org.springframework.web.servlet.mvc.Controller;
 
 import com.springbook.biz.user.UserVO;
 import com.springbook.biz.user.impl.UserDAO;
 
+/*
 public class LoginController implements Controller {
 	
 	@Override
@@ -42,6 +49,42 @@ public class LoginController implements Controller {
 			mav.setViewName("redirect:login.jsp");
 		}
 		return mav;
+	}
+
+}
+*/
+
+// 어노테이션 기반
+@Controller
+public class LoginController {
+	// RequestMappring에 method를 추가하여 각기 다른 메소드별로 처리되게 할 수 있다.
+	@RequestMapping(value="/login.do", method=RequestMethod.GET)
+	public String loginView(UserVO vo)
+	{
+		System.out.println("로그인 화면으로 이동");
+		// UserVO 객체를 login.jsp에서 사용한다.
+		// 만약 .jsp 파일에서 이름을 UserVO가 아닌 다른 이름으로 변경하고 싶다면
+		// public String loginView(@ModelAttribute("user") UserVO vo) 로 설정하면 된다.
+		vo.setId("test");
+		vo.setPassword("test123");
+		return "login.jsp";
+	}
+	
+	@RequestMapping(value="/login.do", method=RequestMethod.POST)
+	public String login(UserVO vo, UserDAO userDAO, HttpSession session) {
+		System.out.println("로그인 처리");
+		
+		UserVO user = userDAO.getUser(vo);
+		
+		if (userDAO.getUser(vo) != null)
+		{
+			session.setAttribute("userName", user.getName());
+			return "getBoardList.do";
+		}
+		else
+		{
+			return "login.jsp";
+		}
 	}
 
 }
