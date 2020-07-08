@@ -15,7 +15,7 @@ import com.springbook.biz.board.BoardVO;
 
 // DAO(Data Access Object)
 //JdbcDaoSupport 클래스를 상속하는 방법
-@Repository
+@Repository("boardDAOSpring")
 //public class BoardDAOSpring extends JdbcDaoSupport {
 // JdbcTemplate Bean 등록 실습
 public class BoardDAOSpring {	
@@ -32,6 +32,8 @@ public class BoardDAOSpring {
 	private final String BOARD_DELETE = "delete board where seq=?";
 	private final String BOARD_GET = "select * from board where seq=?";
 	private final String BOARD_LIST = "select * from board order by seq desc";
+	private final String BOARD_LIST_T = "select * from board where title like '%'||?||'% order by seq desc";
+	private final String BOARD_LIST_C = "select * from board where content like '%'||?||'%' order by seq desc";
 
 	// JdbcTemplate Bean 등록 실습을 위해 주석처리
 	/*
@@ -80,7 +82,16 @@ public class BoardDAOSpring {
 	public List<BoardVO> getBoardList(BoardVO vo) {
 		System.out.println("===> Spring JDBC로 getBoardList() 기능 처리");
 		//return getJdbcTemplate().query(BOARD_LIST, new BoardRowMapper());
-		return jdbcTemplate.query(BOARD_LIST, new BoardRowMapper());
+		Object[] args = {vo.getSearchKeyword()};
+		if (vo.getSearchKeyword().equals("TITLE"))
+		{
+			return jdbcTemplate.query(BOARD_LIST_T, args, new BoardRowMapper());
+		}
+		else if (vo.getSearchCondition().equals("CONTENT"))
+		{
+			return jdbcTemplate.query(BOARD_LIST_C, args, new BoardRowMapper());
+		}
+		return null;
 	}
 
 }

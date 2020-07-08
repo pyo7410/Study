@@ -1,16 +1,24 @@
 package com.springbook.view.board;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.servlet.ModelAndView;
+//import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.springbook.biz.board.BoardListVO;
+import com.springbook.biz.board.BoardService;
 import com.springbook.biz.board.BoardVO;
 import com.springbook.biz.board.impl.BoardDAO;
 
@@ -22,6 +30,33 @@ import com.springbook.biz.board.impl.BoardDAO;
 @Controller
 @SessionAttributes("board")
 public class BoardController {
+	
+	@Autowired
+	private BoardService boardService;
+	
+	// JSON 변환
+	// @ResponseBody는 자바 객체를 Http 응답 프로토콜의 몸체로 변환시키기 위해 사용
+	// dataTransformJSON() 메소드의 실행 결과는 JSON으로 변환되어 HTTP 응답 보디에 설정될 것이다.
+	@RequestMapping("/dataTransformJSON.do")
+	@ResponseBody
+	public List<BoardVO> dataTransformJSON(BoardVO vo) {
+		vo.setSearchCondition("TITLE");
+		vo.setSearchKeyword("");
+		List<BoardVO> boardList = boardService.getBoardList(vo);
+		return boardList;
+	}
+	
+	// XML 변환
+	@RequestMapping("/dataTransformXML.do")
+	@ResponseBody
+	public BoardListVO dataTransformXML(BoardVO vo) {
+		vo.setSearchCondition("TITLE");
+		vo.setSearchKeyword("");
+		List<BoardVO> boardList = boardService.getBoardList(vo);
+		BoardListVO boardListVO = new BoardListVO();
+		boardListVO.setBoardList(boardList);
+		return boardListVO;
+	}
 	
 	// 검색 조건 목록 설정
 	// @ModelAttribute는 LoginController에서 이름 변경 뿐만아니라 View(jsp)에서 사용할 데이터를 설정하는 용도로도 사용된다.
@@ -46,10 +81,18 @@ public class BoardController {
 	// 중요한 점은 Form 태그안의 파라미터 ㅣ름과 Command 객체의 Setter 메소드 이름이 반드시 일치해야 한다.
 	// 즉, 각 파라미터 이름에 해당하는 메소드가 있어야 Setter 인젝션에 의해 자동으로 사용자 입력값이 저장된다.
 	@RequestMapping(value = "/insertBoard.do")
-	public String insertBoard(BoardVO vo, BoardDAO boardDAO) {
+	public String insertBoard(BoardVO vo) throws IOException {
 		System.out.println("글 등록 처리");
+		
+		// 파일 업로드 처리
+		MultipartFile uploadFile = vo.getUploadFile();
+		if(!uploadFile.isEmpty())
+		{
+			String fileName = uploadFile.getOriginalFilename();
+			uploadFile.transferTo(new File("C:/Users/JSP/Desktop/Spring/upload", fileName));
+		}
 
-		boardDAO.insertBoard(vo);
+		boardService.insertBoard(vo);
 		// 포워딩은 예를 들어 글 등록 후에 목록 화면이 출려고디도 브라우저의 URL은 변경안되는 것을 의미 (return
 		// "getBoardList.do"; -> http://localhost:8090/BoardWeb/insertBoard.do)
 		// 리다이렉트는 글 등록 처리 후에 리다이렉트에 해당되는 URL로 변경 (return "redirect:getBoardList.do; ->
@@ -69,7 +112,7 @@ public class BoardController {
 	// 그리고 있다면 해당 객체를 세션에서 꺼내서 매개변수로 선언된 vo 변수에 할당한다.
 	// 이때 사용자가 입력한 수정 정보값만 새롭게 할당된다.
 	@RequestMapping("/updateBoard.do")
-	public String updateBoard(@ModelAttribute("board") BoardVO vo, BoardDAO boardDAO) {
+	public String updateBoard(@ModelAttribute("board") BoardVO vo) {
 		System.out.println("글 수정 처리");
 
 		System.out.println("번호 : " + vo.getSeq());
@@ -79,7 +122,7 @@ public class BoardController {
 		System.out.println("등록일 : " + vo.getRegDate());
 		System.out.println("조회수 : " + vo.getCnt());
 
-		boardDAO.updateBoard(vo);
+		boardService.updateBoard(vo);
 		return "getBoardList.do";
 	}
 
@@ -118,10 +161,10 @@ public class BoardController {
 	// String
 	// 글 상세 조회
 	@RequestMapping("/getBoard.do")
-	public String getBoard(BoardVO vo, BoardDAO boardDAO, Model model) {
+	public String getBoard(BoardVO vo, Model model) {
 		System.out.println("글 상세 조회 처리");
 
-		model.addAttribute("board", boardDAO.getBoard(vo)); // Model 정보 저장
+		model.addAttribute("board", boardService.getBoard(vo)); // Model 정보 저장
 		return "getBoard.jsp"; // View 이름 리턴
 	}
 
@@ -135,16 +178,21 @@ public class BoardController {
 	// required : 파라미터의 생략 여부
 	// 만약 @RequestParam을 사용하기 싫다면 BoardVO 클래스에 searchCondition, searchKeyword 변수를 추가하고 Getter/Setter 메소드만 추가하면 된다.
 	@RequestMapping("/getBoardList.do")
-	public String getBoardList(@RequestParam(value="searchCondition", defaultValue="TITLE", required=false) String condition,
-			                   @RequestParam(value="searchKeyword", defaultValue="", required=false) String keyword, 
-			                   BoardVO vo, BoardDAO boardDAO, Model model) {
+	public String getBoardList(BoardVO vo, Model model) {
 		System.out.println("글 목록 검색 처리");
 		
-		System.out.println("검색 조건 : " + condition);
-		System.out.println("검색 단어 : " + keyword);
+		// Null Check
+		if (vo.getSearchCondition() == null)
+		{
+			vo.setSearchCondition("TITLE");
+		}
+		if (vo.getSearchKeyword() == null)
+		{
+			vo.setSearchKeyword("");
+		}
 
 		// Model 정보 저장
-		model.addAttribute("boardList", boardDAO.getBoardList(vo));
+		model.addAttribute("boardList", boardService.getBoardList(vo));
 		return "getBoardList.jsp";
 	}
 

@@ -2,7 +2,9 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:context="http://www.springframework.org/schema/context"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">
 
 	<!-- HandlerMapping 등록 -->
@@ -40,5 +42,64 @@
 	<!-- 어노테이션 기반 Spring -->
 	<context:component-scan base-package="com.springbook.view">
 	</context:component-scan>
-
+	
+	<!-- 어노테이션 기반 예외 처리 -->
+	<!-- @ExceptionHandler 어노테이션을 사용 가능 -->
+	<!-- <mvc:annotation-driven></mvc:annotation-driven> -->
+	
+	<!-- XML 기반 예외 처리 -->
+	<bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>
+				<prop key="java.lang.ArithmeticException">
+					common/arithmeticError.jsp
+				</prop>
+				<prop key="java.lang.NullPointerException">
+					common/nullPointerExceptionError.jsp
+				</prop>
+			</props>
+		</property>
+		<property name="defaultErrorView" value="common/error.jsp" />
+	</bean>
+	
+	<!-- 파일 업로드 설정 -->
+	<!-- CommonsMultipartResolver 클래스의 id는 multipartResolver로 고정되있음을 주의 -->
+	<!-- 보통 Resolver로 끝나는 클래스들은 id가 고정되어있다. -->
+	<!-- maxUploadSize에 Setter 인젝션을 통해 업로드 되는 파일의 크기 제한을 지정할 수 있다  -->
+	<!-- maxUploadSize를 지정하지 않으면 -1 이되는데 이는 업로드 되는 파일의 크기제한을 무제한으로 한다는 의미이다. -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="100000" />
+	</bean>
+	
+	<!-- 다국어 설정 -->
+	<!-- MessageSource 등록 -->
+	<!-- ResourceBundleMessageSource는 id가 messageSource로 고정되있다. -->
+	<!-- messageSource에 메시지 파일을 등록할 때 확장자 .properties는 생략 -->
+	<!-- 어떤 메시지 파일이 적용되는지는 기본 언어 설정과 Locale의 변화에 따라 해당 언어의 메시지가 자동으로 선택 -->
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>message.messageSource</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- LocaleResolver 등록 -->
+	<!-- 스프링은 LocaleResolver를 통해서 클라이언트의 Locale 정보를 추출하고 이 Local 정보에 해당하는 언어의 메시지를 적용한다. -->
+	<!-- 스프링에서 LocaleResolver가 등록되어있지 않다면 기본으로 AcceptHeaderLocaleResolver가 적용 -->
+	<!-- AcceptHeaderLocaleResolver, CookieLocaleResolver, SessionLocaleResolver, FixedLocaleResolve -->
+	<!-- 총 4가지가 존재 이중, SessionLocaleResolver를 가장 많이 사용 -->
+	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver"></bean>
+	
+	<!-- LocaleChangeInterceptor 등록 -->
+	<!-- mvc 네임스페이스가 beans에 등록되어있어야 한다. -->
+	<!-- Setter 주입으로 paramName 값을 "lang"으로 지정, 이는 클라이언트로부터 "lang"이라는 파라미터로 특정 Locale이 전송되면 해당 Locale로 변경하겠다는 설정 -->
+	<mvc:interceptors>
+		<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+			<property name="paramName" value="lang" />
+		</bean>
+	</mvc:interceptors>
+	
+	<!-- JSON 변환 -->
+	<mvc:annotation-driven></mvc:annotation-driven>
 </beans>
