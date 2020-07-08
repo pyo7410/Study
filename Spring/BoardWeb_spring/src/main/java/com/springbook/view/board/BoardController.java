@@ -1,6 +1,9 @@
 package com.springbook.view.board;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +12,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 //import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.springbook.biz.board.BoardListVO;
 import com.springbook.biz.board.BoardService;
 import com.springbook.biz.board.BoardVO;
 import com.springbook.biz.board.impl.BoardDAO;
@@ -27,6 +33,30 @@ public class BoardController {
 	
 	@Autowired
 	private BoardService boardService;
+	
+	// JSON 변환
+	// @ResponseBody는 자바 객체를 Http 응답 프로토콜의 몸체로 변환시키기 위해 사용
+	// dataTransformJSON() 메소드의 실행 결과는 JSON으로 변환되어 HTTP 응답 보디에 설정될 것이다.
+	@RequestMapping("/dataTransformJSON.do")
+	@ResponseBody
+	public List<BoardVO> dataTransformJSON(BoardVO vo) {
+		vo.setSearchCondition("TITLE");
+		vo.setSearchKeyword("");
+		List<BoardVO> boardList = boardService.getBoardList(vo);
+		return boardList;
+	}
+	
+	// XML 변환
+	@RequestMapping("/dataTransformXML.do")
+	@ResponseBody
+	public BoardListVO dataTransformXML(BoardVO vo) {
+		vo.setSearchCondition("TITLE");
+		vo.setSearchKeyword("");
+		List<BoardVO> boardList = boardService.getBoardList(vo);
+		BoardListVO boardListVO = new BoardListVO();
+		boardListVO.setBoardList(boardList);
+		return boardListVO;
+	}
 	
 	// 검색 조건 목록 설정
 	// @ModelAttribute는 LoginController에서 이름 변경 뿐만아니라 View(jsp)에서 사용할 데이터를 설정하는 용도로도 사용된다.
@@ -51,8 +81,16 @@ public class BoardController {
 	// 중요한 점은 Form 태그안의 파라미터 ㅣ름과 Command 객체의 Setter 메소드 이름이 반드시 일치해야 한다.
 	// 즉, 각 파라미터 이름에 해당하는 메소드가 있어야 Setter 인젝션에 의해 자동으로 사용자 입력값이 저장된다.
 	@RequestMapping(value = "/insertBoard.do")
-	public String insertBoard(BoardVO vo) {
+	public String insertBoard(BoardVO vo) throws IOException {
 		System.out.println("글 등록 처리");
+		
+		// 파일 업로드 처리
+		MultipartFile uploadFile = vo.getUploadFile();
+		if(!uploadFile.isEmpty())
+		{
+			String fileName = uploadFile.getOriginalFilename();
+			uploadFile.transferTo(new File("C:/Users/JSP/Desktop/Spring/upload", fileName));
+		}
 
 		boardService.insertBoard(vo);
 		// 포워딩은 예를 들어 글 등록 후에 목록 화면이 출려고디도 브라우저의 URL은 변경안되는 것을 의미 (return
