@@ -1,5 +1,4 @@
 #include <iostream>
-#include <cstdio>
 using namespace std;
 
 int main()
@@ -7,8 +6,6 @@ int main()
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
     cout.tie(nullptr);
-
-    FILE* fp = freopen("C:\\Users\\pyo74\\Desktop\\git-project\\Study\\SWEA\\input_output\\1211_input.txt", "r", stdin);
 
     int arr[101][101] = {0, };
 
