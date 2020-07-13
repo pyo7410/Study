@@ -15,8 +15,16 @@ import com.springbook.biz.board.BoardVO;
 @Service("boardService")
 public class BoardServiceImpl implements BoardService {
 	
+	//@Autowired
+	//private BoardDAO boardDAO;
+	
+	// Mybatis 연동
+	//@Autowired
+	//private BoardDAOMybatis boardDAO;
+	
+	// JPA
 	@Autowired
-	private BoardDAO boardDAO;
+	private BoardDAOJPA boardDAO;
 	
 	// Spring jdbc 실습
 	//@Autowired

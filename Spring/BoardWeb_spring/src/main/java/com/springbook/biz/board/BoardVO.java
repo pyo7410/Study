@@ -4,6 +4,13 @@ package com.springbook.biz.board;
 // XML로 변환할려면 반드시 해당 클래스에 기본 생성자가 있어야하므로 java.util.Date가 필요
 import java.util.Date;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -14,24 +21,34 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 // Value Object
+
 // @XmlAccessorType 어노테이션은 해당 객체를 XML로 변환할 수 있다는 의미
 // XmlAccessType.FIELD 때문에 이 객체가 가진 필드, 즉 변수들은 자동으로 자식 엘리먼트로 표현된다.
 // 하지만 @XmlAttribute가 붙은 변수는 자식 엘리먼트가아닌 속성으로 표시하라는 의미이다.
 // @XmlTransient는 JSON에서 @JsonIgnore와 같은 개념의 어노테이션 이다.
+@Entity // JPA
+@Table(name="BOARD")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class BoardVO {
+	
+	@Id
+	@GeneratedValue
 	@XmlAttribute
 	private int seq;
 	private String title;
 	private String writer;
 	private String content;
+	@Temporal(TemporalType.DATE)
 	private Date regDate;
 	private int cnt;
 	@XmlTransient
+	@Transient // JPA
 	private String searchCondition;
 	@XmlTransient
+	@Transient // JPA
 	private String searchKeyword;
 	@XmlTransient
+	@Transient // JPA
 	private MultipartFile uploadFile;
 	public int getSeq() {
 		return seq;

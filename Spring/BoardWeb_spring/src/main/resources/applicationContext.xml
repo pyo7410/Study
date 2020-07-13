@@ -30,6 +30,50 @@
 	 <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
 	 	<property name="dataSource" ref="dataSource" />
 	 </bean>
-
+	
+	<!-- Spring과  Mybatis 연동 -->
+	<bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:sql-map-config.xml" />
+	</bean>
+	
+	<!-- Spring과 Mybatis 연동 설정 -->
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="configLocation" value="classpath:sql-map-config.xml" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<!-- SqlSessionTemplate 클래스에는 Setter 메소드가 없어서 Setter 인젝션이 불가능 -->
+	<!-- 생성자인 Constructor 주입으로 처리해야한다. -->
+	<!-- BoardDAOMybatis.java 참고 -->
+	<bean class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSession"></constructor-arg>
+	</bean>
+	
+	<!-- 스프링과 JPA 연동 설정 -->
+	<bean id="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+	</bean>
+	
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="jpaVendorAdapter" ref="jpaVendorAdapter"></property>
+	</bean>
+	
+	<!-- Transaction 설정 -->
+	<bean id="txManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory"></property>
+	</bean>
+	
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+		<tx:attributes>
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="*" />
+		</tx:attributes>
+	</tx:advice>
+	
+	<aop:config>
+		<aop:pointcut id="allPointcut" expression="execution(* com.springbook.biz..*Impl.*(..))" />
+		<aop:advisor pointcut-ref="allPointcut" advice-ref="txAdvice" />
+	</aop:config>
 
 </beans>
