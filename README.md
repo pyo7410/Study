@@ -1,5 +1,7 @@
-# Study
+## Spring framework 프로젝트 (진행중)
 
-학습을 위한 저장소 입니다.
+https://github.com/93HSpring/CoffeeReview
+
+## Study
 
 https://comgong-man.tistory.com/
