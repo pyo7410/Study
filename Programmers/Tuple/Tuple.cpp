@@ -46,6 +46,7 @@ vector<int> solution(string s)
             num = "";
         }
     }
+    // 숫자가 항상 마지막이므로 마지막 숫자를 넣어준다
     tuple[stoi(num)] += 1;
 
     vector<pair<int, int>> temp;

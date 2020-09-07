@@ -60,6 +60,12 @@ bool solution(vector<vector<int>> key, vector<vector<int>> lock)
                     for (int l = 0; l < key_size; ++l)
                     {
                         // 열쇠의 돌기와 자물쇠의 돌기는 만나서는 안된다!
+                        // k + i, l + j 는 현재 key가 위치한 i, j 에서 lock이 한가운데 들어간
+                        // 3배크기 배열의 인덱스 가 된다. 즉, key의 해당위치의 값과 3배크기 배열의 값이 1이라면
+                        // 돌기이므로 안된다!
+                        // 6 x 6 크기의 3배 배열이고 key는 2 x 2 크기의 배열이고 3배 배열의 i = 1, j = 1 위치가 key의 시작지점이면
+                        // 만약, key에서는 1, 1 위치가 1이지만 3배 배열에서의 인덱스로 변환하기 위해서는 키의 시작 인덱스를 
+                        // key의 현재 위치 인덱스와 더해주면 된다.
                         if (key[k][l] == 1 && search_key[k + i][l + j] == 1)
                         {
                             isRight = false;
