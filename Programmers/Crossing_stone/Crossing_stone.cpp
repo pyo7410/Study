@@ -4,8 +4,6 @@
 #include <algorithm>
 using namespace std;
 
-// https://covenant.tistory.com/162
-
 bool check (vector<int> stones, int k, int mid)
 {
     int cnt = 0;
@@ -43,11 +41,16 @@ int solution(vector<int> stones, int k) {
     int answer = 0;
     
     // 건널 수 있는 인원은 최대 2억명
-    // 최대 무한대 이지만 stones에는 2억까지 들어가므로
+    // 최대 무한대 이지만 stones에 들어갈수 있는 수는 최대 2억이므로
+    // 하지만 2억은 큰 숫자이기 때문에 현재 stones의 값중 가장 큰 값을 넣어
+    // 더 빠른시간에 이분 탐색을 끝내게 해야한다.
     int right = *max_element(stones.begin(), stones.end());
     // 건널 수 있는 인원은 최소 1명
     int left = 1;
 
+    // 초기 right, left 값만 설정해주고
+    // 이분탐색을 통해 mid 즉 현재 건널 인원의 수를
+    // 찾아가면 된다.
     while (left <= right)
     {
         // 현재 건널 인원 수
