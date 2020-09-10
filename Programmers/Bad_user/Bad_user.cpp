@@ -6,8 +6,8 @@
 using namespace std;
 
 
-// uid¿Í bidÀÇ ³»¿ëÀÌ ÀüºÎ ¸Â´ÂÁö È®ÀÎ
-// *´Â ¸ğµç ¹®ÀÚ¿­¿¡ ¸ÅÄª
+// uid? bid? ??? ?? ??? ??
+// *? ?? ???? ??
 bool isEqual(string uid, string bid)
 {
     int len = uid.length();
@@ -26,36 +26,36 @@ bool isEqual(string uid, string bid)
     return true;
 }
 
-// banned_id¿Í ¸ÅÄª¿©ºÎ¸¦ ÆÇ´Ü
+// banned_id? ????? ??
 bool check[9];
-// user_id ¹è¿­ÀÇ °³¼ö¸¦ ÀúÀå
+// user_id ??? ??? ??
 int user_size;
-// banned_idÀÇ °³¼ö¸¦ ÀúÀå
+// banned_id? ??? ??
 int banned_size;
-// Áßº¹À» Á¦°ÅÇÑ banned_id¿Í ¸ÅÄªµÈ user_idÀÇ 0ºÎÅÍ Á¤·ÄµÈ index°ªÀ» ÀúÀå
-// Á¤·ÄµÈ index¸¦ °¡Áö°í ÀÖÀ¸¹Ç·Î Áßº¹À» Á¦°Å °¡´É
-// ex) user_id   = "frodo", "fradi", "crodo", "abc123", "frodoc" ÀÏ °æ¿ì
-//     banned_id = "*rodo", "******", "******" ¶ó¸é
-//     frodo abc123 frodoc || frodo frodoc abc123ÀÌ ³ª¿Â´Ù¸é
-//     ÇØ´ç indexµéÀº 034¿Í 043 ÀÌ°í ÀÌ¸¦ ¿À¸§Â÷¼ø Á¤·ÄÇÏ¸é 034, 034°¡ µÇ¹Ç·Î Áßº¹À» Á¦°ÅÇÒ ¼ö ÀÖ´Ù.
+// ??? ??? banned_id? ??? user_id? 0?? ??? index?? ??
+// ??? index? ??? ???? ??? ?? ??
+// ex) user_id   = "frodo", "fradi", "crodo", "abc123", "frodoc" ? ??
+//     banned_id = "*rodo", "******", "******" ??
+//     frodo abc123 frodoc || frodo frodoc abc123? ????
+//     ?? index?? 034? 043 ?? ?? ???? ???? 034, 034? ??? ??? ??? ? ??.
 set<string> foundID;
 
-// index : banned_idÀÇ ÀÎµ¦½º
-// position : banned_id¿Í ¸ÅÄªµÈ user_idÀÇ ÀÎµ¦½º
+// index : banned_id? ???
+// position : banned_id? ??? user_id? ???
 void findID(int index, string position, vector<string> user_id, vector<string> banned_id)
 {
-    // index°¡ banned_id ¹è¿­ÀÇ ³¡ÀÌ¶ó¸é
+    // index? banned_id ??? ????
     if (index == banned_size)
     {
-        // set¿¡ ³Ö¾î Áßº¹À» ¾ø¿¡±â À§ÇØ banned_id¿Í ¸ÅÄªµÈ user_idÀÇ ÀÎµ¦½º¸¦ sort
+        // set? ?? ??? ??? ?? banned_id? ??? user_id? ???? sort
         // ex) frodo, crodo, abc123 | crodo, frodo, abc123
         sort(position.begin(), position.end());
-        // set¿¡ »ğÀÔ, ¸¸¾à Áßº¹ÀÌ¶ó¸é Áßº¹Àº Á¦°ÅµÊ.
+        // set? ??, ?? ????? ??? ???.
         foundID.insert(position);
         return;
     }
 
-    // ban´çÇÑ id
+    // ban?? id
     string bid = banned_id[index];
 
     for (int i = 0; i < user_size; ++i)
@@ -63,36 +63,36 @@ void findID(int index, string position, vector<string> user_id, vector<string> b
         // user id
         string uid = user_id[i];
 
-        // ¸¸¾à bid¿Í uidÀÇ ±æÀÌ°¡ ´Ù¸£¸é ºñ±³ÇÒ ÇÊ¿ä°¡ ¾ø´Ù.
+        // ?? bid? uid? ??? ??? ??? ??? ??.
         if (uid.length() != bid.length())
         {
             continue;
         }
 
-        // ÀÌ¹Ì banned_id¿¡ ¸ÅÄªµÈ user_idÀÏ °æ¿ì ÀÌ¹Ì Æ÷ÇÔ‰çÀ¸¹Ç·Î Á¦¿ÜÇØ¾ßÇÑ´Ù.
+        // ?? banned_id? ??? user_id? ?? ?? ??‰??? ??????.
         if (check[i])
         {
             continue;
         }
 
-        // uid¿Í bid°¡ °°´Ù¸é
+        // uid? bid? ???
         if (isEqual(uid, bid))
         {
-            // ÇØ´ç uid°¡ bid¿¡ ¸ÅÄª‰çÀ½À» Ç¥±â
+            // ?? uid? bid? ??‰?? ??
             check[i] = true;
 
-            // ÇöÀç indexÀÇ banned_id¿Í ¸ÅÄªµÈ uid¸¦ Ã£¾ÒÀ¸¹Ç·Î
-            // ´ÙÀ½ indexÀÇ banned_id¿Í ¸ÅÄªµÉ uid¸¦ Ã£°ÔÇÑ´Ù.
-            // position ¹®ÀÚ¿­¿¡ ÇöÀç uidÀÇ ÀÎµ¦½º¸¦ ´ã¾Æ ¾î¶² uid¿Í ¸ÅÄª‰ç´ÂÁö Ç¥½ÃÇÑ´Ù.
+            // ?? index? banned_id? ??? uid? ?????
+            // ?? index? banned_id? ??? uid? ????.
+            // position ???? ?? uid? ???? ?? ?? uid? ??‰?? ????.
             findID(index + 1, position + to_string(i), user_id, banned_id);
 
-            // ¸ğµç °æ¿ì¸¦ ºÁ¾ßÇÏ±â ¶§¹®¿¡
-            // ÇØ´ç uidÀÇ ¸ÅÄªÀÌ ‰çÀ½À» ´Ù½Ã ¸ÅÄªÀÌ ¾È‰çÀ½À¸·Î ¹Ù²Ù°í
-            // ´ÙÀ½ user_id¿Í banned_id¸¦ ºñ±³ÇØº»´Ù.
-            // "frodo", "fradi", "crodo", "abc123", "frodoc" ÀÏ °æ¿ì
-            // ex) frodo, crodo, abc123 ¿Í fradi, crodo, abc123Àº ´Ù¸£´Ù.
-            //     Áï, frodo ´ÙÀ½¿¡ ÀÖ´Â fradi¿¡ ´ëÇØ¼­µµ ´ÙÀ½ ÀÎµ¦½ºÀÇ ¸ğµç banned_id¿Í
-            //     ¸ÅÄªÀÌ µÇ´ÂÁö ºñ±³ÇØ¾ß ÇÑ´Ù.
+            // ?? ??? ???? ???
+            // ?? uid? ??? ‰?? ?? ??? ?‰??? ???
+            // ?? user_id? banned_id? ?????.
+            // "frodo", "fradi", "crodo", "abc123", "frodoc" ? ??
+            // ex) frodo, crodo, abc123 ? fradi, crodo, abc123? ???.
+            //     ?, frodo ??? ?? fradi? ???? ?? ???? ?? banned_id?
+            //     ??? ??? ???? ??.
             check[i] = false;
         }
     }
@@ -104,8 +104,8 @@ int solution(vector<string> user_id, vector<string> banned_id) {
     user_size = user_id.size();
     banned_size = banned_id.size();
     
-    // banned_idÀÇ Ã¹ ÀÎµ¦½ºÀÎ 0
-    // banned_id¿Í ¸ÅÄªµÈ user_idÀÇ ÀÎµ¦½º¸¦ ±â·ÏÇÒ ""
+    // banned_id? ? ???? 0
+    // banned_id? ??? user_id? ???? ??? ""
     findID(0, "", user_id, banned_id);
 
     answer = foundID.size();
