@@ -1,4 +1,3 @@
-#include <iostream>
 #include <string>
 #include <vector>
 #include <stack>
@@ -21,8 +20,8 @@ bool isbalanced(string p)
         }
     }
 
-    // ?? ??? ??? ??? ??? ???
-    // ???? ?? ???? ????
+    // 왼쪽 괄호와 오른쪽 괄호의 갯수가 다르면
+    // 균형잡힌 괄호 문자열이 아니므로
     if (l_cnt != r_cnt)
     {
         return false;
@@ -44,7 +43,7 @@ bool isCorrect(string u)
         }
         else if (u[i] == ')')
         {
-            // ????? ) ? ???? ?? ??? ???? ? ? ??.
+            // 비어있는데 ) 가 나온다는 것은 올바른 문자열이 될 수 없다.
             if (s.empty())
             {
                 return false;
@@ -54,8 +53,8 @@ bool isCorrect(string u)
         }
     }
 
-    // ???? ???
-    // ??? ?? ???? ????
+    // 비어있지 않다면
+    // 올바른 괄호 문자열이 아니므로
     if (!s.empty())
     {
         return false;
@@ -87,7 +86,7 @@ string correctBracket(string p)
 
     for (int i = 1; i < p_len; ++i)
     {
-        // ??? p? ???? ???? ???? ????.
+        // 문자열 p는 어찌됬든 균형잡인 문자열로 분리된다.
         if (i == (p_len - 1)) 
         {
             for (int j = 0; j <= i; ++j)
@@ -98,7 +97,7 @@ string correctBracket(string p)
             break;
         }
 
-        // u? ?? ???? ?? ???? ?? ??? ? ??.
+        // u는 절대 균형잡힌 괄호 문자열로 다시 분리될 수 없다.
         if (left_cnt == right_cnt)
         {
             for (int j = 0; j < i; ++j)
@@ -123,7 +122,7 @@ string correctBracket(string p)
         }
     }
 
-    // ??? ??????
+    // 올바른 문자열이라면
     if (isCorrect(u))
     {
         u += correctBracket(v);
@@ -134,11 +133,10 @@ string correctBracket(string p)
         temp += correctBracket(v);
         temp += ")";
 
-        // u? ? ???? ????
-        // ????? ??? ?????
+        // u가 빈 문자열이 아니라면
+        // 비어있다면 그대로 진행하면됨
         if (!u.empty())
         {
-            // string? erase? ????? iterator?? ????!
             u.erase(u.begin());
             u.erase(u.end() - 1);
         }        
@@ -182,17 +180,4 @@ string solution(string p)
     }
 
     return answer;
-}
-
-int main()
-{
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    cout.tie(nullptr);
-
-    string s;
-    cin >> s;
-    solution(s);
-
-    return 0;
 }
