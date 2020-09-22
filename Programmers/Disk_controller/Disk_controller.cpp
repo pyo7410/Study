@@ -54,7 +54,9 @@ int solution(vector<vector<int>> jobs)
         }
         else // 큐가 비어있다면
         {
-            // 다음 작업 시간으로 넘겨준다.
+            // 대기작업이 없다는 뜻이므로
+            // 현재 들어올 작업이 들어온시간이
+            // 현재 시간이 된다.
             time = jobs[idx][0];
         }
         
