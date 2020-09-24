@@ -33,6 +33,7 @@ int solution(vector<int> money)
     }
 
     // 두번째 집부터
+    // 두번째 집부터는 맨 마지막집까지 훔칠수 있다
     for (int i = 2; i < money_size; ++i)
     {
         // dp_second[n - 1]은 dp_second[n]이전까지 훔친 모든 돈의 합이 들어있다.
