@@ -2,7 +2,7 @@
 #include <cstring>
 using namespace std;
 
-// 각 자리수별 어떤 숫자가 사용됬는지를 기록
+// ? ???? ?? ??? ?????? ??
 long long dp[101][10];
 long long MOD = 1000000000LL;
 
@@ -10,7 +10,7 @@ long long solve(int n, int num)
 {
     if (n == 1)
     {
-        // 0으로 시작하는 숫자는 없다.
+        // 0?? ???? ??? ??.
         if (num == 0)
         {
             return 0;
@@ -28,12 +28,12 @@ long long solve(int n, int num)
 
     if (num - 1 >= 0)
     {
-        // 자리수를 한칸 줄여주고 계단수로 만든다.
+        // ???? ?? ???? ???? ???.
         dp[n][num] += solve(n - 1, num - 1);
     }
     if (num + 1 <= 9)
     {
-        // 자리수를 한칸 줄이고 계단수로 만든다.
+        // ???? ?? ??? ???? ???.
         dp[n][num] += solve(n - 1, num + 1);
     }
 

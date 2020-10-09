@@ -19,7 +19,7 @@ int solution(string skill, vector<string> skill_trees) {
             {
                 if (skill[k] == skill_trees[i][j])
                 {
-                    if (k == 0)
+                    if (k >= 0)
                     {
                         visit[skill[k] - 'A'] = true;
                         break;
